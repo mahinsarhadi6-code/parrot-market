@@ -1,1 +1,126 @@
 
+حتماً عزیزم 🌷 این کد کامل بازی است. روی علامت کپی بالای کادر بزن و بعد در صفحه‌ی GitHub داخل کادر سفید Paste کن.
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>بازارچه‌ی طوطی و بازرگان</title>
+<style>
+body {
+  font-family: Tahoma, sans-serif;
+  background: linear-gradient(135deg,#fff3c4,#d8f5df);
+  margin: 0;
+  padding: 18px;
+  text-align: center;
+  color: #25452d;
+}
+.card {
+  max-width: 520px;
+  margin: 20px auto;
+  background: white;
+  padding: 24px;
+  border-radius: 22px;
+  box-shadow: 0 5px 18px #0002;
+}
+h1 { color: #16733c; font-size: 25px; }
+.parrot { font-size: 65px; }
+.question { font-size: 20px; font-weight: bold; margin: 24px 0; }
+button {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: 13px;
+  padding: 15px;
+  margin: 10px 0;
+  font-size: 17px;
+  font-family: inherit;
+  background: #e7f5e9;
+  color: #214d2c;
+}
+button:disabled { opacity: .85; }
+#next { background: #168044; color: white; display:none; }
+#feedback { font-weight: bold; min-height: 28px; }
+.info { color: #777; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="parrot">🦜</div>
+  <h1>بازارچه‌ی طوطی و بازرگان</h1>
+  <p>بازی واژه‌های درس پنجم فارسی چهارم</p>
+  <p class="info">به پرسش‌ها پاسخ بده و سکه جمع کن!</p>
+  <hr>
+  <p id="progress">سؤال ۱ از ۱۰</p>
+  <p>🪙 سکه‌ها: <span id="coins">۰</span></p>
+  <div class="question" id="question"></div>
+  <div id="answers"></div>
+  <p id="feedback"></p>
+  <button id="next" onclick="nextQuestion()">سؤال بعدی</button>
+  <div id="result"></div>
+</div>
+<p class="info">طراح بازی: مهین سرحدی<br>آموزگار پایه چهارم دبستان علی دهقانیان، تبادکان</p>
+<script>
+const questions = [
+ {q:"رهایی یعنی چه؟",a:["آزاد شدن","خوابیدن","خرید کردن","پنهان شدن"],c:0},
+ {q:"قفس چیست؟",a:["جای نگهداری پرنده","بازار بزرگ","جنگل","خانه‌ی بازرگان"],c:0},
+ {q:"بازرگان چه کسی است؟",a:["کشاورز","تاجر","شاعر","پزشک"],c:1},
+ {q:"هم‌معنی آزادی کدام است؟",a:["رهایی","گرفتاری","اسارت","اندوه"],c:0},
+ {q:"مخالف واژه‌ی آزاد چیست؟",a:["شاد","اسیر","رها","خوشحال"],c:1},
+ {q:"پیام یعنی چه؟",a:["خبر و سخن","خوراک","لباس","بازی"],c:0},
+ {q:"بازرگان بیشتر با چه کاری سروکار دارد؟",a:["نقاشی","دادوستد","شنا","ورزش"],c:1},
+ {q:"کدام جمله درست است؟",a:["پرنده از قفس رهایی یافت.","پرنده قفس را نوشید.","بازرگان پرواز کرد.","قفس آواز خواند."],c:0},
+ {q:"هم‌معنی اسیر کدام است؟",a:["آزاد","گرفتار","خوشحال","رها"],c:1},
+ {q:"یکی از پیام‌های داستان چیست؟",a:["آزادی و همدلی ارزشمندند.","ثروت از همه چیز مهم‌تر است.","پرندگان نباید پرواز کنند.","دوستی بی‌فایده است."],c:0}
+];
+let current=0, coins=0;
+const digits=n=>String(n).replace(/\d/g,d=>"۰۱۲۳۴۵۶۷۸۹"[d]);
+function showQuestion(){
+ const q=questions[current];
+ document.getElementById("progress").textContent="سؤال "+digits(current+1)+" از ۱۰";
+ document.getElementById("question").textContent=q.q;
+ document.getElementById("feedback").textContent="";
+ document.getElementById("next").style.display="none";
+ const area=document.getElementById("answers");
+ area.innerHTML="";
+ q.a.forEach((answer,i)=>{
+  const b=document.createElement("button");
+  b.textContent=answer;
+  b.onclick=()=>checkAnswer(i);
+  area.appendChild(b);
+ });
+}
+function checkAnswer(i){
+ const q=questions[current];
+ const buttons=document.querySelectorAll("#answers button");
+ buttons.forEach(b=>b.disabled=true);
+ if(i===q.c){
+  coins+=10;
+  document.getElementById("feedback").textContent="آفرین! پاسخ درست است 🌟 ۱۰ سکه گرفتی.";
+  document.getElementById("coins").textContent=digits(coins);
+ }else{
+  document.getElementById("feedback").textContent="تلاش خوبی بود! پاسخ درست: "+q.a[q.c];
+ }
+ document.getElementById("next").style.display="block";
+ document.getElementById("next").textContent=current===9?"دیدن نتیجه":"سؤال بعدی";
+}
+function nextQuestion(){
+ current++;
+ if(current<10){showQuestion();}
+ else{
+  document.getElementById("question").textContent="🎉 بازی تمام شد!";
+  document.getElementById("answers").innerHTML="";
+  document.getElementById("feedback").textContent="امتیاز تو: "+digits(coins)+" از ۱۰۰";
+  document.getElementById("next").style.display="block";
+  document.getElementById("next").textContent="شروع دوباره";
+  document.getElementById("next").onclick=()=>location.reload();
+  document.getElementById("progress").textContent="پایان بازی";
+ }
+}
+showQuestion();
+</script>
+</body>
+</html>
+
+بعد از جای‌گذاری، فعلاً دکمه‌ی Commit changes را نزن تا با هم بررسی کنیم کد درست وارد شده باشد.
