@@ -1,1 +1,213 @@
 
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>راز گنج دانایی</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:14px;font-family:Tahoma,sans-serif;background:linear-gradient(140deg,#15365d,#16816c,#f4c66d);color:#26364a}
+.card{max-width:580px;margin:18px auto;padding:22px;background:#fffdf4;border-radius:24px;box-shadow:0 8px 25px #0004;text-align:center}
+.author{font-size:23px;font-weight:bold;color:#087b56}
+.school{font-size:12px;color:#777;line-height:2}
+h1{color:#a86613;font-size:27px}
+h2{color:#176b68}
+.hero{font-size:65px}
+.story{background:#fff1cf;padding:15px;border-radius:15px;line-height:2}
+.stats{display:flex;justify-content:space-around;gap:8px;flex-wrap:wrap;background:#e4f5eb;padding:12px;border-radius:14px;font-weight:bold}
+button{width:100%;padding:14px;margin:8px 0;border:0;border-radius:13px;font-size:16px;font-family:Tahoma;background:#e6f2e9;color:#174c37}
+button:disabled{opacity:1}
+.main{background:#137b58;color:white;font-weight:bold}
+.correct{background:#c9f2d3!important}
+.wrong{background:#ffe0df!important}
+#game,#finish{display:none}
+#next{display:none}
+#feedback{min-height:48px;line-height:2;font-weight:bold}
+.progress{height:12px;background:#ddd;border-radius:20px;overflow:hidden;margin:14px 0}
+#bar{height:100%;width:0;background:#159568;transition:.3s}
+#question{font-size:19px;font-weight:bold;line-height:2;margin:20px 0}
+</style>
+</head>
+<body>
+
+<div class="card" id="start">
+<p class="author">مهین سرحدی 🌷</p>
+<p class="school">آموزگار پایه چهارم دبستان علی دهقانیان، تبادکان</p>
+<hr>
+<div class="hero">🗺️🔍</div>
+<h1>راز گنج دانایی</h1>
+<h2>مأموریت نجات حکیم</h2>
+<div class="story">
+کارآگاه کوچولو! یک گنج اسرارآمیز در انتظار توست.
+پنج مرحله‌ی پرماجرا و بیست معمای دانایی پیش روی توست.
+پاسخ درست بده، کلیدها را جمع کن و صندوق گنج را باز کن! 🗝️
+</div>
+<p>⭐ ۲۰ سؤال | 🗝️ ۲۰ کلید | 💎 ۱۰۰ امتیاز</p>
+<button class="main" onclick="startGame()">🚀 شروع مأموریت</button>
+</div>
+
+<div class="card" id="game">
+<div class="hero" id="emoji">🔍</div>
+<h2 id="stageTitle"></h2>
+<div class="stats">
+<span>⭐ امتیاز: <span id="score">۰</span></span>
+<span>🗝️ کلیدها: <span id="keys">۰</span></span>
+</div>
+<div class="progress"><div id="bar"></div></div>
+<p id="progressText"></p>
+<div id="question"></div>
+<div id="answers"></div>
+<p id="feedback"></p>
+<button class="main" id="next" onclick="nextQuestion()">ادامه مأموریت ➡️</button>
+</div>
+
+<div class="card" id="finish">
+<div class="hero">🏆💎🎉</div>
+<h1>آفرین قهرمان دانایی!</h1>
+<div class="story">
+<h2>نتیجه مأموریت تو</h2>
+<p>⭐ امتیاز: <b id="finalScore"></b> از ۱۰۰</p>
+<p>🗝️ کلیدها: <b id="finalKeys"></b> از ۲۰</p>
+<h2 id="rank"></h2>
+</div>
+<p>گنج واقعی، علم و دانایی است؛ سرمایه‌ای که همیشه همراه ما می‌ماند. 💚</p>
+<button class="main" onclick="location.reload()">🔄 بازی دوباره</button>
+</div>
+
+<script>
+const stages=[
+{
+title:"مرحله اول: ردپای حکیم",
+emoji:"🔍",
+questions:[
+{q:"شخصیت اصلی درس ارزش علم کیست؟",a:["حکیم","کشاورز","شکارچی","پادشاه"],c:0},
+{q:"حکیم در سفر با چه خطری روبه‌رو شد؟",a:["توفان در دریا","زلزله","آتش‌سوزی","برف شدید"],c:0},
+{q:"کدام ویژگی به حکیم نسبت داده می‌شود؟",a:["دانایی و خردمندی","تنبل بودن","خودخواهی","بی‌توجهی"],c:0},
+{q:"حکیم برای چه چیزی ارزش زیادی قائل بود؟",a:["علم و دانایی","لباس گران‌بها","بازی و سرگرمی","خوراک"],c:0}
+]
+},
+{
+title:"مرحله دوم: طوفان بزرگ",
+emoji:"🌊",
+questions:[
+{q:"توفان در کجا اتفاق افتاد؟",a:["دریا","جنگل","کوه","کویر"],c:0},
+{q:"پس از شکستن کشتی، حکیم برای نجات خود چه کرد؟",a:["به تخته‌پاره‌ای چسبید","به خانه برگشت","در کشتی خوابید","به کوه رفت"],c:0},
+{q:"در هنگام خطر، کدام کار بهتر است؟",a:["آرامش و فکر کردن","ناامیدی","عجله بدون فکر","سرزنش دیگران"],c:0},
+{q:"کدام وسیله برای نجات در دریا مناسب‌تر است؟",a:["قایق نجات","دوچرخه","مداد","چتر"],c:0}
+]
+},
+{
+title:"مرحله سوم: رمز واژه‌ها",
+emoji:"🔐",
+questions:[
+{q:"معنی واژه «حکیم» چیست؟",a:["دانشمند و خردمند","نادان","فروشنده","کشاورز"],c:0},
+{q:"هم‌معنی «دانایی» کدام است؟",a:["آگاهی","نادانی","فراموشی","تاریکی"],c:0},
+{q:"مخالف واژه «آرام» چیست؟",a:["ناآرام","ساکت","آسوده","خونسرد"],c:0},
+{q:"کدام واژه هم‌خانواده «علم» است؟",a:["عالم","قلم","قلمرو","عسل"],c:0}
+]
+},
+{
+title:"مرحله چهارم: اتاق فکر",
+emoji:"🧠",
+questions:[
+{q:"چرا علم را گنج می‌دانیم؟",a:["چون ارزشمند است و به ما کمک می‌کند","چون از طلا ساخته شده","چون در صندوق است","چون سنگین است"],c:0},
+{q:"کدام کار نشانه علاقه به علم است؟",a:["مطالعه و پرسشگری","بی‌توجهی به درس","فرار از کتاب","مسخره کردن دیگران"],c:0},
+{q:"اگر چیزی را ندانیم، چه کنیم؟",a:["بپرسیم و یاد بگیریم","پنهان کنیم","بی‌خیال شویم","دیگران را سرزنش کنیم"],c:0},
+{q:"کدام جمله درست است؟",a:["دانایی با یادگیری بیشتر می‌شود","علم فایده‌ای ندارد","پرسیدن کار بدی است","فقط پول مهم است"],c:0}
+]
+},
+{
+title:"مرحله پنجم: صندوق گنج",
+emoji:"💎",
+questions:[
+{q:"گنج واقعی انسان چیست؟",a:["علم و دانایی","لباس گران‌بها","خانه بزرگ","طلا و نقره"],c:0},
+{q:"دانش چه کمکی به ما می‌کند؟",a:["راه درست را بهتر بشناسیم","کمتر فکر کنیم","از پرسیدن دوری کنیم","هیچ کاری نکنیم"],c:0},
+{q:"کدام رفتار با ارزش علم سازگار است؟",a:["یادگیری و کمک به دیگران","پنهان کردن دانسته‌ها","تمسخر دوستان","بی‌احترامی"],c:0},
+{q:"پیام اصلی درس ارزش علم چیست؟",a:["علم و دانایی سرمایه‌ای ارزشمند است","ثروت از همه چیز مهم‌تر است","یادگیری فایده ندارد","پرسیدن بد است"],c:0}
+]
+}
+];
+
+let stage=0,questionIndex=0,score=0,keys=0,locked=false;
+const digits=n=>String(n).replace(/\d/g,d=>"۰۱۲۳۴۵۶۷۸۹"[d]);
+
+function startGame(){
+document.getElementById("start").style.display="none";
+document.getElementById("game").style.display="block";
+showQuestion();
+}
+
+function showQuestion(){
+locked=false;
+const s=stages[stage],q=s.questions[questionIndex];
+document.getElementById("emoji").textContent=s.emoji;
+document.getElementById("stageTitle").textContent=s.title;
+document.getElementById("score").textContent=digits(score);
+document.getElementById("keys").textContent=digits(keys);
+document.getElementById("progressText").textContent=
+"مرحله "+digits(stage+1)+" از ۵ | سؤال "+digits(questionIndex+1)+" از ۴";
+document.getElementById("bar").style.width=((stage*4+questionIndex)/20*100)+"%";
+document.getElementById("question").textContent=q.q;
+document.getElementById("feedback").textContent="";
+document.getElementById("next").style.display="none";
+const area=document.getElementById("answers");
+area.innerHTML="";
+q.a.forEach((answer,i)=>{
+const b=document.createElement("button");
+b.textContent=answer;
+b.onclick=()=>checkAnswer(i);
+area.appendChild(b);
+});
+}
+
+function checkAnswer(i){
+if(locked)return;
+locked=true;
+const q=stages[stage].questions[questionIndex];
+const buttons=document.querySelectorAll("#answers button");
+buttons.forEach((b,j)=>{
+b.disabled=true;
+if(j===q.c)b.classList.add("correct");
+if(j===i&&i!==q.c)b.classList.add("wrong");
+});
+if(i===q.c){
+score+=5;keys++;
+document.getElementById("feedback").textContent="آفرین! پاسخ درست بود. یک کلید گنج گرفتی! 🗝️🌟";
+}else{
+document.getElementById("feedback").textContent="تلاش خوبی بود! پاسخ درست: "+q.a[q.c]+" 🌷";
+}
+document.getElementById("score").textContent=digits(score);
+document.getElementById("keys").textContent=digits(keys);
+document.getElementById("bar").style.width=((stage*4+questionIndex+1)/20*100)+"%";
+document.getElementById("next").style.display="block";
+document.getElementById("next").textContent=
+(stage===4&&questionIndex===3)?"باز کردن صندوق گنج 💎":
+(questionIndex===3)?"رفتن به مرحله بعد 🗝️":"سؤال بعدی ➡️";
+}
+
+function nextQuestion(){
+if(!locked)return;
+questionIndex++;
+if(questionIndex>=4){questionIndex=0;stage++;}
+if(stage>=5){finishGame();}
+else{showQuestion();}
+}
+
+function finishGame(){
+document.getElementById("game").style.display="none";
+document.getElementById("finish").style.display="block";
+document.getElementById("finalScore").textContent=digits(score);
+document.getElementById("finalKeys").textContent=digits(keys);
+let rank="";
+if(score===100)rank="👑 نابغه دانایی!";
+else if(score>=80)rank="🏆 قهرمان دانایی!";
+else if(score>=60)rank="🌟 کارآگاه پرتلاش!";
+else if(score>=40)rank="🔍 جوینده دانش!";
+else rank="🌱 دانش‌آموز تلاشگر!";
+document.getElementById("rank").textContent=rank;
+}
+</script>
+</body>
+</html>
